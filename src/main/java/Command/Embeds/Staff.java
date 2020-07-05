@@ -74,7 +74,6 @@ public class Staff implements CommandInterface {
             case "DO_NOT_DISTURB":
                 return " :red_circle:";
         }
-
         return "";
     }
 
