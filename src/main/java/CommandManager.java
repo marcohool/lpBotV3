@@ -1,6 +1,7 @@
 import Command.CommandInterface;
 import Command.Commands.Photos;
 import Command.Commands.Ping;
+import Command.Commands.ProfilePicture;
 import Command.Commands.Samo;
 import Command.Embeds.Help;
 import Command.Embeds.ServerInfo;
@@ -22,6 +23,7 @@ public class CommandManager {
         addCommand(new Samo());
         addCommand(new League());
         addCommand(new Photos());
+        addCommand(new ProfilePicture());
     }
 
     public void addCommand(CommandInterface command) {
