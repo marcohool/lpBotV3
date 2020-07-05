@@ -12,7 +12,9 @@ import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
@@ -22,6 +24,11 @@ public class League implements CommandInterface {
 
     @Override
     public void handle(CommandContext context) {
+
+        if (!getLeagueCommandStatus()){
+            context.getChannel().sendMessage("this command has been DISABLED by the ONE AND ONLY - marco 'the HOOLIGAN' macerborski").queue();
+            return;
+        }
 
         Orianna.setRiotAPIKey(Config.getAPIKey("APIKEY"));
 
@@ -260,6 +267,23 @@ public class League implements CommandInterface {
 
         return username;
 
+    }
+
+    private boolean getLeagueCommandStatus() {
+
+        try {
+
+            FileReader reader = new FileReader("assets/league command status.txt");
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            String status = bufferedReader.readLine();
+            reader.close();
+
+            return status.equalsIgnoreCase("enabled");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override

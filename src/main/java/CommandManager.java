@@ -7,6 +7,7 @@ import Command.Embeds.Help;
 import Command.Embeds.ServerInfo;
 import Command.Embeds.Staff;
 import LeagueOfLegends.League;
+import LeagueOfLegends.SetLeagueCommand;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ public class CommandManager {
         addCommand(new League());
         addCommand(new Photos());
         addCommand(new ProfilePicture());
+        addCommand(new SetLeagueCommand());
     }
 
     public void addCommand(CommandInterface command) {

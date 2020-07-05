@@ -1,3 +1,5 @@
+package Config;
+
 public class Constants {
 
     public static final String prefix = "lp";
