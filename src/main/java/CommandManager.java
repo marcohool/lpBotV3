@@ -1,4 +1,5 @@
 import Command.CommandInterface;
+import Command.Commands.Photos;
 import Command.Commands.Ping;
 import Command.Commands.Samo;
 import Command.Embeds.Help;
@@ -20,6 +21,7 @@ public class CommandManager {
         addCommand(new Staff());
         addCommand(new Samo());
         addCommand(new League());
+        addCommand(new Photos());
     }
 
     public void addCommand(CommandInterface command) {

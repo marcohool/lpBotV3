@@ -5,8 +5,6 @@ import Command.CommandInterface;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
-
 import java.awt.*;
 import java.util.*;
 import java.util.List;
