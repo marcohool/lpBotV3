@@ -80,7 +80,7 @@ public class PlayerManager {
 
             @Override
             public void noMatches() {
-                textChannel.sendMessage("Song doesnt exist :rofl:");
+                textChannel.sendMessage("Song doesnt exist :rofl:").queue();
             }
 
             @Override
