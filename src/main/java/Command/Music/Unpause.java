@@ -4,21 +4,21 @@ import Command.CommandContext;
 import Command.CommandInterface;
 import Music.PlayerManager;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
-public class Pause implements CommandInterface {
+public class Unpause implements CommandInterface {
 
     @Override
     public void handle(CommandContext context) {
 
         PlayerManager manager = PlayerManager.getPlayerManager();
-        manager.pausePlayer(context);
+        manager.unpausePlayer(context);
 
     }
 
     @Override
     public List<String> getCalls() {
-        return Collections.singletonList("pause");
+        return Arrays.asList("unpause", "un pause");
     }
 }

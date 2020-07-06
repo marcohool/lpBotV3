@@ -6,10 +6,7 @@ import Command.Commands.Samo;
 import Command.Embeds.Help;
 import Command.Embeds.ServerInfo;
 import Command.Embeds.Staff;
-import Command.Music.Join;
-import Command.Music.Leave;
-import Command.Music.Pause;
-import Command.Music.Play;
+import Command.Music.*;
 import LeagueOfLegends.League;
 import LeagueOfLegends.SetLeagueCommand;
 
@@ -21,6 +18,7 @@ public class CommandManager {
     HashMap<CommandInterface,List<String>> commands = new HashMap<>();
 
     public CommandManager() {
+        addCommand(new Pause());
         addCommand(new Ping());
         addCommand(new Help());
         addCommand(new ServerInfo());
@@ -33,7 +31,7 @@ public class CommandManager {
         addCommand(new Join());
         addCommand(new Leave());
         addCommand(new Play());
-        addCommand(new Pause());
+        addCommand(new Unpause());
     }
 
     public void addCommand(CommandInterface command) {

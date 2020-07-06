@@ -2,6 +2,7 @@ package Music;
 
 import Command.CommandContext;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -90,10 +91,35 @@ public class PlayerManager {
         });
     }
 
-    public void pausePlayer(Guild guild) {
+    public void pausePlayer(CommandContext context) {
 
-        GuildMusicManager musicManager = getGuildMusicManager(guild);
+        GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
+        AudioPlayer audioPlayer = musicManager.getPlayer();
+
+        if (audioPlayer.isPaused()){
+            context.getChannel().sendMessage("The player is already paused !").queue();
+            return;
+        }
+
+        context.getChannel().sendMessage("PAUSED !").queue();
+
         musicManager.getPlayer().setPaused(true);
+
+    }
+
+    public void unpausePlayer(CommandContext context) {
+
+        GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
+        AudioPlayer audioPlayer = musicManager.getPlayer();
+
+        if (!audioPlayer.isPaused()){
+            context.getChannel().sendMessage("The player isnt paused !").queue();
+            return;
+        }
+
+        context.getChannel().sendMessage("UNPAUSED !").queue();
+
+        musicManager.getPlayer().setPaused(false);
 
     }
 

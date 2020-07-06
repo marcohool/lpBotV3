@@ -15,22 +15,25 @@ public class Play implements CommandInterface {
 
         try {
 
-            String requestedSong = context.getMessage().getContentRaw().substring(8);
-
             boolean joined = Join.joinChannel(context.getMember(), context, context.getChannel());
 
             if (!joined){
                 return;
             }
 
+            String raw = context.getMessage().getContentRaw();
+
+            String[] rawSplit = raw.split(" ", 3);
+            String requestedSong = rawSplit[2];
+            System.out.println(requestedSong);
+
             manager.playTrack(context, requestedSong);
 
-        } catch (StringIndexOutOfBoundsException e){
+        } catch (ArrayIndexOutOfBoundsException e){
             context.getChannel().sendMessage("play what kid").queue();
         }
 
     }
-
 
     @Override
     public List<String> getCalls() {

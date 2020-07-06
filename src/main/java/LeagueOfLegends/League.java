@@ -3,6 +3,7 @@ import Config.Config;
 import Command.CommandContext;
 import Command.CommandInterface;
 import com.merakianalytics.orianna.Orianna;
+import com.merakianalytics.orianna.datapipeline.riotapi.exceptions.ForbiddenException;
 import com.merakianalytics.orianna.types.common.Queue;
 import com.merakianalytics.orianna.types.common.Region;
 import com.merakianalytics.orianna.types.core.league.LeagueEntry;
@@ -44,8 +45,13 @@ public class League implements CommandInterface {
 
         Summoner summoner = Orianna.summonerNamed(summonerName).get();
         // If summoner exists
-        if (summoner.getLevel() == 0){
-            context.getChannel().sendMessage("give me a summoner that exists or u get banned").queue();
+        try {
+            if (summoner.getLevel() == 0) {
+                context.getChannel().sendMessage("give me a summoner that exists or u get banned").queue();
+                return;
+            }
+        } catch (ForbiddenException e){
+            context.getChannel().sendMessage("API key expired - contact the holy one").queue();
             return;
         }
 
