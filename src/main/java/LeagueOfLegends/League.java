@@ -49,8 +49,9 @@ public class League implements CommandInterface {
             return;
         }
 
-        imageSetup(summoner);
+        context.getChannel().sendTyping().queue();
 
+        imageSetup(summoner);
         context.getChannel().sendFile(new File("assets/league events/final.png"), "final.png").queue();
 
     }

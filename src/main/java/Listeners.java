@@ -44,8 +44,8 @@ public class Listeners extends ListenerAdapter {
             for (Map.Entry<CommandInterface, List<String>> entry : commands.getCommands().entrySet()) { // For command in command list
                 for (String call : entry.getValue()) { // For call in command call list
                     if (args.startsWith(call)) {
-                        event.getChannel().sendTyping().queue();
                         entry.getKey().handle(ctx);
+                        break;
                     }
                 }
             }
@@ -53,6 +53,7 @@ public class Listeners extends ListenerAdapter {
     }
 
     private void checkBannedWordsAndEmojis(String message, GuildMessageReceivedEvent event) {
+
 
         String[] splitMessage = message.split("\\s+");
 

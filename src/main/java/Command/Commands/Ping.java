@@ -18,6 +18,7 @@ public class Ping implements CommandInterface {
 
     @Override
     public List<String> getCalls() {
+
         return Collections.singletonList("ping");
     }
 }

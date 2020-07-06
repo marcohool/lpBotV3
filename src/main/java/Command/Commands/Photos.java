@@ -17,6 +17,7 @@ public class Photos implements CommandInterface {
         context.getChannel().sendTyping().queue();
         String image = getRandomImage();
         File file = new File("assets/photo files/" + image);
+        context.getChannel().sendTyping().queue();
         context.getChannel().sendFile(file, image).queue();
 
     }

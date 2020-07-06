@@ -6,6 +6,9 @@ import Command.Commands.Samo;
 import Command.Embeds.Help;
 import Command.Embeds.ServerInfo;
 import Command.Embeds.Staff;
+import Command.Music.Join;
+import Command.Music.Leave;
+import Command.Music.Play;
 import LeagueOfLegends.League;
 import LeagueOfLegends.SetLeagueCommand;
 
@@ -26,6 +29,9 @@ public class CommandManager {
         addCommand(new Photos());
         addCommand(new ProfilePicture());
         addCommand(new SetLeagueCommand());
+        addCommand(new Join());
+        addCommand(new Leave());
+        addCommand(new Play());
     }
 
     public void addCommand(CommandInterface command) {
