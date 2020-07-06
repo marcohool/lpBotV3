@@ -33,6 +33,7 @@ public class CommandManager {
         addCommand(new Play());
         addCommand(new Unpause());
         addCommand(new Skip());
+        addCommand(new Queue());
     }
 
     public void addCommand(CommandInterface command) {

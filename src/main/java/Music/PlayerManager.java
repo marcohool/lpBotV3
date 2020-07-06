@@ -17,7 +17,10 @@ import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class PlayerManager {
 
@@ -95,14 +98,30 @@ public class PlayerManager {
         });
     }
 
+    private void displaySongAsEmbed(String message, TextChannel channel){
+
+        EmbedBuilder builder = new EmbedBuilder().setAuthor("Currently Playing")
+                .setDescription(message)
+                .setColor(new Color(54, 57, 63));
+        channel.sendMessage(builder.build()).queue();
+
+    }
+
+    public void displayQueue(CommandContext context){
+
+        GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
+        BlockingQueue<AudioTrack> queue = musicManager.scheduler.getQueue();
+
+        for (AudioTrack audioTrack : queue) {
+            System.out.println(audioTrack.getInfo().title);
+        }
+
+    }
+
     public void skipSong(CommandContext context){
 
         GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
-        AudioPlayer audioPlayer = musicManager.getPlayer();
-        audioPlayer.stopTrack();
-
-
-        playTrack(context, musicManager.scheduler.getNextSong().getIdentifier());
+        musicManager.scheduler.nextTrack();
 
     }
 
@@ -138,14 +157,6 @@ public class PlayerManager {
 
     }
 
-    private void displaySongAsEmbed(String message, TextChannel channel){
-
-        EmbedBuilder builder = new EmbedBuilder().setAuthor("Currently Playing")
-                .setDescription(message)
-                .setColor(new Color(54, 57, 63));
-        channel.sendMessage(builder.build()).queue();
-
-    }
 
     public static synchronized PlayerManager getPlayerManager() {
 
@@ -156,4 +167,5 @@ public class PlayerManager {
         return playerManager;
 
     }
+
 }
