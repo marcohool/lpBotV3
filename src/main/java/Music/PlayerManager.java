@@ -9,8 +9,11 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
+
+import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -60,6 +63,7 @@ public class PlayerManager {
             @Override
             public void trackLoaded(AudioTrack track) {
 
+                displaySongAsEmbed(track.getInfo().title, textChannel);
                 textChannel.sendMessage("Adding to queue: " + track.getInfo().title).queue();
                 musicManager.scheduler.queue(track);
 
@@ -73,7 +77,7 @@ public class PlayerManager {
                     firstTrack = playlist.getTracks().get(0);
                 }
 
-                textChannel.sendMessage("Adding to queue: " + firstTrack.getInfo().title ).queue();
+                displaySongAsEmbed(firstTrack.getInfo().title,textChannel);
 
                 musicManager.scheduler.queue(firstTrack);
             }
@@ -89,6 +93,17 @@ public class PlayerManager {
                 exception.printStackTrace();
             }
         });
+    }
+
+    public void skipSong(CommandContext context){
+
+        GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
+        AudioPlayer audioPlayer = musicManager.getPlayer();
+        audioPlayer.stopTrack();
+
+
+        playTrack(context, musicManager.scheduler.getNextSong().getIdentifier());
+
     }
 
     public void pausePlayer(CommandContext context) {
@@ -120,6 +135,15 @@ public class PlayerManager {
         context.getChannel().sendMessage("UNPAUSED !").queue();
 
         musicManager.getPlayer().setPaused(false);
+
+    }
+
+    private void displaySongAsEmbed(String message, TextChannel channel){
+
+        EmbedBuilder builder = new EmbedBuilder().setAuthor("Currently Playing")
+                .setDescription(message)
+                .setColor(new Color(54, 57, 63));
+        channel.sendMessage(builder.build()).queue();
 
     }
 

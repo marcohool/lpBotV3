@@ -32,6 +32,7 @@ public class CommandManager {
         addCommand(new Leave());
         addCommand(new Play());
         addCommand(new Unpause());
+        addCommand(new Skip());
     }
 
     public void addCommand(CommandInterface command) {

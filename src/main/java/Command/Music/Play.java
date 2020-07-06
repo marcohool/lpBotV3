@@ -25,7 +25,6 @@ public class Play implements CommandInterface {
 
             String[] rawSplit = raw.split(" ", 3);
             String requestedSong = rawSplit[2];
-            System.out.println(requestedSong);
 
             manager.playTrack(context, requestedSong);
 
