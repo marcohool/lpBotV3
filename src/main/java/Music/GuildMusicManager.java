@@ -19,4 +19,8 @@ public class GuildMusicManager {
         return new AudioPlayerSendHandler(player);
     }
 
+    public AudioPlayer getPlayer(){
+        return player;
+    }
+
 }

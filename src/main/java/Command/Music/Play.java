@@ -3,10 +3,7 @@ package Command.Music;
 import Command.CommandContext;
 import Command.CommandInterface;
 import Music.PlayerManager;
-
-
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class Play implements CommandInterface {
@@ -30,10 +27,7 @@ public class Play implements CommandInterface {
 
         } catch (StringIndexOutOfBoundsException e){
             context.getChannel().sendMessage("play what kid").queue();
-            return;
         }
-
-
 
     }
 

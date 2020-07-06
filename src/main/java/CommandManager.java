@@ -8,6 +8,7 @@ import Command.Embeds.ServerInfo;
 import Command.Embeds.Staff;
 import Command.Music.Join;
 import Command.Music.Leave;
+import Command.Music.Pause;
 import Command.Music.Play;
 import LeagueOfLegends.League;
 import LeagueOfLegends.SetLeagueCommand;
@@ -32,6 +33,7 @@ public class CommandManager {
         addCommand(new Join());
         addCommand(new Leave());
         addCommand(new Play());
+        addCommand(new Pause());
     }
 
     public void addCommand(CommandInterface command) {

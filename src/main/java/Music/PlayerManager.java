@@ -51,7 +51,7 @@ public class PlayerManager {
         try {
             new URL(requestedSong);
         } catch (MalformedURLException e) {
-            requestedSong = "ytsearch:"+requestedSong;
+            requestedSong = "ytsearch: "+requestedSong;
         }
 
         audioPlayerManager.loadItemOrdered(musicManager, requestedSong, new AudioLoadResultHandler() {
@@ -66,16 +66,35 @@ public class PlayerManager {
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
+                AudioTrack firstTrack = playlist.getSelectedTrack();
+
+                if (firstTrack == null) {
+                    firstTrack = playlist.getTracks().get(0);
+                }
+
+                textChannel.sendMessage("Adding to queue: " + firstTrack.getInfo().title ).queue();
+
+                musicManager.scheduler.queue(firstTrack);
             }
 
             @Override
             public void noMatches() {
+                textChannel.sendMessage("Song doesnt exist :rofl:");
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
+                System.out.println("Load failed");
+                exception.printStackTrace();
             }
         });
+    }
+
+    public void pausePlayer(Guild guild) {
+
+        GuildMusicManager musicManager = getGuildMusicManager(guild);
+        musicManager.getPlayer().setPaused(true);
+
     }
 
     public static synchronized PlayerManager getPlayerManager() {
