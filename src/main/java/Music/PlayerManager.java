@@ -67,7 +67,6 @@ public class PlayerManager {
             public void trackLoaded(AudioTrack track) {
 
                 displaySongAsEmbed(track.getInfo().title, textChannel);
-                textChannel.sendMessage("Adding to queue: " + track.getInfo().title).queue();
                 musicManager.scheduler.queue(track);
 
             }
@@ -98,23 +97,72 @@ public class PlayerManager {
         });
     }
 
+    public void nowPlaying(CommandContext context) {
+
+        GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
+
+        if (musicManager.getPlayer().getPlayingTrack() == null){
+            context.getChannel().sendMessage("Nothing is playing").queue();
+            return;
+        }
+
+        EmbedBuilder builder = new EmbedBuilder().setAuthor("Now Playing")
+                .setDescription(musicManager.getPlayer().getPlayingTrack().getInfo().title)
+                .setColor(new Color(54, 57, 63));
+        context.getChannel().sendMessage(builder.build()).queue();
+
+    }
+
     private void displaySongAsEmbed(String message, TextChannel channel){
 
-        EmbedBuilder builder = new EmbedBuilder().setAuthor("Currently Playing")
+        GuildMusicManager musicManager = getGuildMusicManager(channel.getGuild());
+        String author = "Track Queued";
+
+        if (musicManager.getPlayer().getPlayingTrack() == null){
+            author = "Currently Playing";
+        }
+
+        EmbedBuilder builder = new EmbedBuilder().setAuthor(author)
                 .setDescription(message)
                 .setColor(new Color(54, 57, 63));
         channel.sendMessage(builder.build()).queue();
 
     }
 
+    public void clearQueue(CommandContext context) {
+
+        GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
+        LinkedList<AudioTrack> queue = musicManager.scheduler.getQueue();
+
+        queue.clear();
+        musicManager.scheduler.nextTrack();
+
+    }
+
     public void displayQueue(CommandContext context){
 
         GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
-        BlockingQueue<AudioTrack> queue = musicManager.scheduler.getQueue();
+        LinkedList<AudioTrack> queue = musicManager.scheduler.getQueue();
 
-        for (AudioTrack audioTrack : queue) {
-            System.out.println(audioTrack.getInfo().title);
+        String currentTrack = "";
+
+        try {
+            currentTrack = "1. " + musicManager.getPlayer().getPlayingTrack().getInfo().title;
+        } catch (NullPointerException e){
+            context.getChannel().sendMessage("Queue is empty dumbass").queue();
+            return;
         }
+
+        EmbedBuilder builder = new EmbedBuilder().setAuthor("Queue")
+                .addField("", currentTrack, false)
+                .setColor(new Color(54, 57, 63));
+
+
+        for (int i = 0; i < queue.size(); i++){
+            builder.addField("", (i+2)+". "+queue.get(i).getInfo().title, false);
+        }
+
+        context.getChannel().sendMessage(builder.build()).queue();
 
     }
 

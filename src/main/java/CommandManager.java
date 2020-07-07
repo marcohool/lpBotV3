@@ -34,6 +34,8 @@ public class CommandManager {
         addCommand(new Unpause());
         addCommand(new Skip());
         addCommand(new Queue());
+        addCommand(new NowPlaying());
+        addCommand(new Clear());
     }
 
     public void addCommand(CommandInterface command) {
