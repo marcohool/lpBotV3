@@ -13,7 +13,7 @@ public class NowPlaying implements CommandInterface {
     public void handle(CommandContext context) {
 
         PlayerManager manager = PlayerManager.getPlayerManager();
-        manager.nowPlaying(context);
+        manager.nowPlaying(context.getChannel());
 
     }
 

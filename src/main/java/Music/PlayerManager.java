@@ -12,15 +12,12 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
-
 import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class PlayerManager {
 
@@ -66,8 +63,9 @@ public class PlayerManager {
             @Override
             public void trackLoaded(AudioTrack track) {
 
-                displaySongAsEmbed(track.getInfo().title, textChannel);
+
                 musicManager.scheduler.queue(track);
+                displaySongAsEmbed(textChannel);
 
             }
 
@@ -79,9 +77,8 @@ public class PlayerManager {
                     firstTrack = playlist.getTracks().get(0);
                 }
 
-                displaySongAsEmbed(firstTrack.getInfo().title,textChannel);
-
                 musicManager.scheduler.queue(firstTrack);
+                displaySongAsEmbed(textChannel);
             }
 
             @Override
@@ -91,43 +88,46 @@ public class PlayerManager {
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                System.out.println("Load failed");
+                context.getChannel().sendMessage("Something went wrong when looking up the track").queue();
                 exception.printStackTrace();
             }
         });
     }
 
-    public void nowPlaying(CommandContext context) {
+    public void nowPlaying(TextChannel channel) {
 
-        GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
+        GuildMusicManager musicManager = getGuildMusicManager(channel.getGuild());
 
         if (musicManager.getPlayer().getPlayingTrack() == null){
-            context.getChannel().sendMessage("Nothing is playing").queue();
+            channel.sendMessage("Nothing is playing").queue();
             return;
         }
 
-        EmbedBuilder builder = new EmbedBuilder().setAuthor("Now Playing")
+        EmbedBuilder builder = new EmbedBuilder().setAuthor("Now Playing", channel.getGuild().getVanityUrl(), "https://creazilla-store.fra1.digitaloceanspaces.com/emojis/45439/play-button-emoji-clipart-md.png")
                 .setDescription(musicManager.getPlayer().getPlayingTrack().getInfo().title)
-                .setColor(new Color(54, 57, 63));
-        context.getChannel().sendMessage(builder.build()).queue();
-
-    }
-
-    private void displaySongAsEmbed(String message, TextChannel channel){
-
-        GuildMusicManager musicManager = getGuildMusicManager(channel.getGuild());
-        String author = "Track Queued";
-
-        if (musicManager.getPlayer().getPlayingTrack() == null){
-            author = "Currently Playing";
-        }
-
-        EmbedBuilder builder = new EmbedBuilder().setAuthor(author)
-                .setDescription(message)
+                .addField("", "Time", false)
                 .setColor(new Color(54, 57, 63));
         channel.sendMessage(builder.build()).queue();
 
     }
+
+    private void displaySongAsEmbed(TextChannel channel){
+
+        GuildMusicManager musicManager = getGuildMusicManager(channel.getGuild());
+        LinkedList<AudioTrack> queue = musicManager.scheduler.getQueue();
+
+        if (queue.isEmpty()){
+            nowPlaying(channel);
+            return;
+        }
+
+        EmbedBuilder builder = new EmbedBuilder().setAuthor("Track Queued")
+                .setDescription(musicManager.getPlayer().getPlayingTrack().getInfo().title)
+                .setColor(new Color(54, 57, 63));
+        channel.sendMessage(builder.build()).queue();
+
+    }
+
 
     public void clearQueue(CommandContext context) {
 
