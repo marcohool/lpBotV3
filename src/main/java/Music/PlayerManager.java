@@ -15,11 +15,9 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class PlayerManager {
 
@@ -207,6 +205,32 @@ public class PlayerManager {
 
         GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
         musicManager.scheduler.nextTrack();
+
+    }
+
+
+    public void seekTrack(CommandContext context){
+
+        GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
+        String time = context.getMessage().getContentRaw().substring(8);
+
+        if (musicManager.getPlayer().getPlayingTrack() == null) {
+            context.getChannel().sendMessage("Wanna play something or ?").queue();
+            return;
+        }
+
+        AudioTrack track = musicManager.getPlayer().getPlayingTrack();
+        try {
+            track.setPosition(Long.parseLong(time)*1000);
+        } catch (NumberFormatException e){
+            if (time.matches("\\d+:\\d+")){
+                String[] times = time.split(":");
+                long durationToSet = (Long.parseLong((times[0]))*60+Long.parseLong(times[1]))*1000;
+                track.setPosition(durationToSet);
+            } else {
+                context.getChannel().sendMessage("Invalid format. Use minute:second").queue();
+            }
+        }
 
     }
 
