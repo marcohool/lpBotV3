@@ -22,7 +22,7 @@ public class SetLeagueCommand implements CommandInterface {
         }
 
         try {
-            FileWriter writer = new FileWriter("assets/league command status.txt", false);
+            FileWriter writer = new FileWriter("src/main/resources/assets/league command status.txt", false);
             if (message.toLowerCase().endsWith(" enabled") || message.toLowerCase().endsWith(" on")) {
                 writer.write("enabled");
                 context.getChannel().sendMessage("command is ENABLED").queue();

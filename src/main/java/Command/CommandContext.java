@@ -8,11 +8,9 @@ import java.util.List;
 public class CommandContext implements ICommandContext {
 
     private final GuildMessageReceivedEvent event;
-    private final String args;
 
     public CommandContext(GuildMessageReceivedEvent event, String args) {
         this.event = event;
-        this.args = args;
     }
 
     @Override
@@ -25,7 +23,4 @@ public class CommandContext implements ICommandContext {
         return this.event;
     }
 
-    public String getArgs() {
-        return this.args;
-    }
 }

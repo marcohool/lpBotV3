@@ -13,10 +13,7 @@ import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -58,7 +55,8 @@ public class League implements CommandInterface {
         context.getChannel().sendTyping().queue();
 
         imageSetup(summoner);
-        context.getChannel().sendFile(new File("assets/league events/final.png"), "final.png").queue();
+        context.getChannel().sendFile(getClass().getClassLoader().getResourceAsStream("assets/leagueEvents/final.png"), "LeagueInfo.png").queue();
+        //new File("src/main/resources/assets/league events/final.png"), "final.png").queue();
 
     }
 
@@ -94,7 +92,8 @@ public class League implements CommandInterface {
 
     private void drawImage(LeagueEntry le, Summoner summoner, Boolean ranked) throws IOException {
 
-        BufferedImage backgroundImg = ImageIO.read(new File("assets/league events/lokobot template.png"));
+        BufferedImage backgroundImg = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/leagueEvents/lokobot template.png"));
+        //new File("src/main/resources/assets/league events/lokobot template.png"));
         BufferedImage summonerIcon = ImageIO.read(new URL(summoner.getProfileIcon().getImage().getURL()));
         BufferedImage tierIcon;
         String tierImageURL;
@@ -157,7 +156,8 @@ public class League implements CommandInterface {
             tierIcon = ImageIO.read(new URL(tierImageURL));
 
         } else {
-            tierIcon = ImageIO.read(new File("assets/league events/unranked.png"));
+            tierIcon = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/leagueEvents/unranked.png"));
+            //new File("src/main/resources/assets/league events/unranked.png"));
             noOfWins = 0;
             noOfLosses = 0;
             colourOfLeague = Color.WHITE;
@@ -240,7 +240,7 @@ public class League implements CommandInterface {
         g2d.draw(tierOutline);
         g2d.dispose();
 
-        File outFile = new File("assets/league events/final.png");
+        File outFile = new File("build/resources/main/assets/leagueEvents/final.png");
         ImageIO.write(backgroundImg, "png", outFile);
 
     }
@@ -280,10 +280,12 @@ public class League implements CommandInterface {
 
         try {
 
-            FileReader reader = new FileReader("assets/league command status.txt");
-            BufferedReader bufferedReader = new BufferedReader(reader);
+            //FileReader reader = new FileReader("src/main/resources/assets/league command status.txt");
+            InputStream is = getClass().getClassLoader().getResourceAsStream("assets/league command status.txt");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            //BufferedReader bufferedReader = new BufferedReader(reader);
             String status = bufferedReader.readLine();
-            reader.close();
+            //reader.close();
 
             return status.equalsIgnoreCase("enabled");
 
