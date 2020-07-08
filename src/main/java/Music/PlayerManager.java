@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class PlayerManager {
 
 
                 musicManager.scheduler.queue(track);
-                displaySongAsEmbed(textChannel);
+                displaySongAsEmbed(textChannel, track.getInfo().title);
 
             }
 
@@ -78,7 +79,7 @@ public class PlayerManager {
                 }
 
                 musicManager.scheduler.queue(firstTrack);
-                displaySongAsEmbed(textChannel);
+                displaySongAsEmbed(textChannel, firstTrack.getInfo().title);
             }
 
             @Override
@@ -103,15 +104,20 @@ public class PlayerManager {
             return;
         }
 
+        String songProgressBar = getTrackDurationEmoji(musicManager.getPlayer());
+
         EmbedBuilder builder = new EmbedBuilder().setAuthor("Now Playing", channel.getGuild().getVanityUrl(), "https://creazilla-store.fra1.digitaloceanspaces.com/emojis/45439/play-button-emoji-clipart-md.png")
                 .setDescription(musicManager.getPlayer().getPlayingTrack().getInfo().title)
-                .addField("", "Time", false)
                 .setColor(new Color(54, 57, 63));
+
+        if (!songProgressBar.equals("")){
+            builder.addField(songProgressBar, "", false);
+        }
         channel.sendMessage(builder.build()).queue();
 
     }
 
-    private void displaySongAsEmbed(TextChannel channel){
+    private void displaySongAsEmbed(TextChannel channel, String message){
 
         GuildMusicManager musicManager = getGuildMusicManager(channel.getGuild());
         LinkedList<AudioTrack> queue = musicManager.scheduler.getQueue();
@@ -122,7 +128,7 @@ public class PlayerManager {
         }
 
         EmbedBuilder builder = new EmbedBuilder().setAuthor("Track Queued")
-                .setDescription(musicManager.getPlayer().getPlayingTrack().getInfo().title)
+                .setDescription(message)
                 .setColor(new Color(54, 57, 63));
         channel.sendMessage(builder.build()).queue();
 
@@ -144,7 +150,7 @@ public class PlayerManager {
         GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
         LinkedList<AudioTrack> queue = musicManager.scheduler.getQueue();
 
-        String currentTrack = "";
+        String currentTrack;
 
         try {
             currentTrack = "1. " + musicManager.getPlayer().getPlayingTrack().getInfo().title;
@@ -163,6 +169,27 @@ public class PlayerManager {
         }
 
         context.getChannel().sendMessage(builder.build()).queue();
+
+    }
+
+    private String getTrackDurationEmoji(AudioPlayer player) {
+
+        float percentage = (100f / player.getPlayingTrack().getDuration() * player.getPlayingTrack().getPosition());
+        if (percentage == 0.0){
+            return "";
+        }
+        int indexPosition = Math.round(25*(percentage/100));
+        String bar = "";
+
+        for (int i = 0; i < 25; i++){
+            if (i == indexPosition){
+                bar = bar.concat(":radio_button:");
+            } else {
+                bar = bar.concat("▬");
+            }
+        }
+
+        return bar;
 
     }
 
