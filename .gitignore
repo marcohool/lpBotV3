@@ -2,5 +2,5 @@
 /.gradle/
 /build/
 /build/classes/java/main/
-src/main/java/.env
+src/main/resources/.env
 .idea
