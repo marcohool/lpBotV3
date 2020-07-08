@@ -19,6 +19,7 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class PlayerManager {
 
@@ -95,11 +96,20 @@ public class PlayerManager {
         });
     }
 
+    private String getDuration(long miliseconds) {
+
+        double minutes = (miliseconds/1000.0/60);
+        return (int)Math.floor(minutes) + ":" + Math.round((60*(minutes-Math.floor(minutes)))*100)/100;
+
+    }
+
     public void nowPlaying(TextChannel channel) {
 
         GuildMusicManager musicManager = getGuildMusicManager(channel.getGuild());
+        AudioTrack currentTrack = musicManager.getPlayer().getPlayingTrack();
 
-        if (musicManager.getPlayer().getPlayingTrack() == null){
+
+        if (currentTrack == null){
             channel.sendMessage("Nothing is playing").queue();
             return;
         }
@@ -107,11 +117,11 @@ public class PlayerManager {
         String songProgressBar = getTrackDurationEmoji(musicManager.getPlayer());
 
         EmbedBuilder builder = new EmbedBuilder().setAuthor("Now Playing", channel.getGuild().getVanityUrl(), "https://creazilla-store.fra1.digitaloceanspaces.com/emojis/45439/play-button-emoji-clipart-md.png")
-                .setDescription(musicManager.getPlayer().getPlayingTrack().getInfo().title)
+                .setDescription(currentTrack.getInfo().title)
                 .setColor(new Color(54, 57, 63));
 
         if (!songProgressBar.equals("")){
-            builder.addField(songProgressBar, "", false);
+            builder.addField(songProgressBar + " [" +getDuration(currentTrack.getPosition())+"/"+getDuration(currentTrack.getDuration())+"]" , "", false);
         }
         channel.sendMessage(builder.build()).queue();
 
@@ -160,12 +170,12 @@ public class PlayerManager {
         }
 
         EmbedBuilder builder = new EmbedBuilder().setAuthor("Queue")
-                .addField("", currentTrack, false)
+                .addField("", currentTrack + " [" + getDuration(musicManager.getPlayer().getPlayingTrack().getDuration()) + "]", false)
                 .setColor(new Color(54, 57, 63));
 
 
         for (int i = 0; i < queue.size(); i++){
-            builder.addField("", (i+2)+". "+queue.get(i).getInfo().title, false);
+            builder.addField("", (i+2)+". "+queue.get(i).getInfo().title + " ["+getDuration(queue.get(i).getDuration())+ "]", false);
         }
 
         context.getChannel().sendMessage(builder.build()).queue();
@@ -181,7 +191,7 @@ public class PlayerManager {
         int indexPosition = Math.round(25*(percentage/100));
         String bar = "";
 
-        for (int i = 0; i < 25; i++){
+        for (int i = 0; i <= 25; i++){
             if (i == indexPosition){
                 bar = bar.concat(":radio_button:");
             } else {

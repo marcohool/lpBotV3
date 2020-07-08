@@ -27,7 +27,6 @@ public class TrackScheduler extends AudioEventAdapter {
 
     public void nextTrack() {
         player.startTrack(queue.poll(), false);
-
     }
 
     public LinkedList<AudioTrack> getQueue() {
