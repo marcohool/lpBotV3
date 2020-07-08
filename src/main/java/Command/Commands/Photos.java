@@ -33,7 +33,6 @@ public class Photos implements CommandInterface {
 
         Random rand = new Random();
         int randNumb = rand.nextInt(Constants.lokoPhotoFiles);
-        randNumb = 9;
         for (int gif : Constants.gifs){
             if (gif == randNumb){
                 mimeType = ".gif";
