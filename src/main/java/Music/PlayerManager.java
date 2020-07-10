@@ -15,8 +15,10 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class PlayerManager {
@@ -71,14 +73,13 @@ public class PlayerManager {
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                AudioTrack firstTrack = playlist.getSelectedTrack();
 
-                if (firstTrack == null) {
-                    firstTrack = playlist.getTracks().get(0);
+                List<AudioTrack> tracks = playlist.getTracks();
+                for (AudioTrack track : tracks){
+                    musicManager.scheduler.queue(track);
                 }
 
-                musicManager.scheduler.queue(firstTrack);
-                displaySongAsEmbed(textChannel, firstTrack.getInfo().title);
+                displayPlaylistAsEmbed(textChannel, musicManager);
             }
 
             @Override
@@ -92,6 +93,15 @@ public class PlayerManager {
                 exception.printStackTrace();
             }
         });
+    }
+
+    private void displayPlaylistAsEmbed(TextChannel channel, GuildMusicManager musicManager) {
+
+        EmbedBuilder builder = new EmbedBuilder().setAuthor("Queued "+(musicManager.scheduler.getQueue().size()+1)+" tracks")
+                .setDescription(musicManager.getPlayer().getPlayingTrack().getInfo().title)
+                .setColor(new Color(54, 57, 63));
+        channel.sendMessage(builder.build()).queue();
+
     }
 
     private String getDuration(long miliseconds) {
