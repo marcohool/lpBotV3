@@ -14,4 +14,9 @@ public class Config {
         return dotenv.get(apikey);
     }
 
+    public static String getClientSecret(String clientsecret) {
+        return dotenv.get(clientsecret);
+    }
+
+
 }

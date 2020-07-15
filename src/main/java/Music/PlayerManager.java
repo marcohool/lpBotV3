@@ -1,6 +1,7 @@
 package Music;
 
 import Command.CommandContext;
+import Music.Spotify.Spotify;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -15,18 +16,14 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class PlayerManager {
 
     private static PlayerManager playerManager;
     private final AudioPlayerManager audioPlayerManager;
     private final Map<Long, GuildMusicManager> musicManagers;
-
 
     private PlayerManager() {
         musicManagers = new HashMap<>();
@@ -54,17 +51,30 @@ public class PlayerManager {
         TextChannel textChannel = context.getChannel();
         GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
 
+        boolean isPlaylist;
+
         try {
             new URL(requestedSong);
+            isPlaylist = false;
+            if (requestedSong.contains("spotify.com")){
+                if (requestedSong.contains("/track/")) { // Is track
+                    requestedSong = "ytsearch:".concat(Objects.requireNonNull(Spotify.getTrackName(requestedSong.substring(requestedSong.indexOf("/track/") + 7, requestedSong.indexOf("?")))));
+                } else { // Is playlist
+                    isPlaylist = true;
+                }
+            }
+
         } catch (MalformedURLException e) {
-            requestedSong = "ytsearch: "+requestedSong;
+            requestedSong = "ytsearch:".concat(requestedSong);
+            isPlaylist = false;
         }
+
+        boolean finalIsPlaylist = isPlaylist;
 
         audioPlayerManager.loadItemOrdered(musicManager, requestedSong, new AudioLoadResultHandler() {
 
             @Override
             public void trackLoaded(AudioTrack track) {
-
 
                 musicManager.scheduler.queue(track);
                 displaySongAsEmbed(textChannel, track.getInfo().title);
@@ -74,11 +84,17 @@ public class PlayerManager {
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
 
-                List<AudioTrack> tracks = playlist.getTracks();
-                for (AudioTrack track : tracks){
+                if (!finalIsPlaylist){
+                    AudioTrack track = playlist.getTracks().get(0);
                     musicManager.scheduler.queue(track);
+                    displaySongAsEmbed(textChannel, track.getInfo().title);
+                    return;
                 }
 
+                List<AudioTrack> tracks = playlist.getTracks();
+                for (AudioTrack track : tracks) {
+                    musicManager.scheduler.queue(track);
+                }
                 displayPlaylistAsEmbed(textChannel, musicManager);
             }
 
@@ -95,19 +111,20 @@ public class PlayerManager {
         });
     }
 
+
     private void displayPlaylistAsEmbed(TextChannel channel, GuildMusicManager musicManager) {
 
-        EmbedBuilder builder = new EmbedBuilder().setAuthor("Queued "+(musicManager.scheduler.getQueue().size()+1)+" tracks")
+        EmbedBuilder builder = new EmbedBuilder().setAuthor("Queued " + (musicManager.scheduler.getQueue().size() + 1) + " tracks")
                 .setDescription(musicManager.getPlayer().getPlayingTrack().getInfo().title)
                 .setColor(new Color(54, 57, 63));
         channel.sendMessage(builder.build()).queue();
 
     }
 
-    private String getDuration(long miliseconds) {
+    private String getDuration(long milliseconds) {
 
-        double minutes = (miliseconds/1000.0/60);
-        return (int)Math.floor(minutes) + ":" + Math.round((60*(minutes-Math.floor(minutes)))*100)/100;
+        double minutes = (milliseconds / 1000.0 / 60);
+        return (int) Math.floor(minutes) + ":" + Math.round((60 * (minutes - Math.floor(minutes))) * 100) / 100;
 
     }
 
@@ -117,7 +134,7 @@ public class PlayerManager {
         AudioTrack currentTrack = musicManager.getPlayer().getPlayingTrack();
 
 
-        if (currentTrack == null){
+        if (currentTrack == null) {
             channel.sendMessage("Nothing is playing").queue();
             return;
         }
@@ -128,19 +145,19 @@ public class PlayerManager {
                 .setDescription(currentTrack.getInfo().title)
                 .setColor(new Color(54, 57, 63));
 
-        if (!songProgressBar.equals("")){
-            builder.addField(songProgressBar + " [" +getDuration(currentTrack.getPosition())+"/"+getDuration(currentTrack.getDuration())+"]" , "", false);
+        if (!songProgressBar.equals("")) {
+            builder.addField(songProgressBar + " [" + getDuration(currentTrack.getPosition()) + "/" + getDuration(currentTrack.getDuration()) + "]", "", false);
         }
         channel.sendMessage(builder.build()).queue();
 
     }
 
-    private void displaySongAsEmbed(TextChannel channel, String message){
+    private void displaySongAsEmbed(TextChannel channel, String message) {
 
         GuildMusicManager musicManager = getGuildMusicManager(channel.getGuild());
         LinkedList<AudioTrack> queue = musicManager.scheduler.getQueue();
 
-        if (queue.isEmpty()){
+        if (queue.isEmpty()) {
             nowPlaying(channel);
             return;
         }
@@ -163,7 +180,7 @@ public class PlayerManager {
 
     }
 
-    public void displayQueue(CommandContext context){
+    public void displayQueue(CommandContext context) {
 
         GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
         LinkedList<AudioTrack> queue = musicManager.scheduler.getQueue();
@@ -172,7 +189,7 @@ public class PlayerManager {
 
         try {
             currentTrack = "1. " + musicManager.getPlayer().getPlayingTrack().getInfo().title;
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             context.getChannel().sendMessage("Queue is empty dumbass").queue();
             return;
         }
@@ -182,8 +199,8 @@ public class PlayerManager {
                 .setColor(new Color(54, 57, 63));
 
 
-        for (int i = 0; i < queue.size(); i++){
-            builder.addField("", (i+2)+". "+queue.get(i).getInfo().title + " ["+getDuration(queue.get(i).getDuration())+ "]", false);
+        for (int i = 0; i < queue.size(); i++) {
+            builder.addField("", (i + 2) + ". " + queue.get(i).getInfo().title + " [" + getDuration(queue.get(i).getDuration()) + "]", false);
         }
 
         context.getChannel().sendMessage(builder.build()).queue();
@@ -193,14 +210,14 @@ public class PlayerManager {
     private String getTrackDurationEmoji(AudioPlayer player) {
 
         float percentage = (100f / player.getPlayingTrack().getDuration() * player.getPlayingTrack().getPosition());
-        if (percentage == 0.0){
+        if (percentage == 0.0) {
             return "";
         }
-        int indexPosition = Math.round(25*(percentage/100));
+        int indexPosition = Math.round(25 * (percentage / 100));
         String bar = "";
 
-        for (int i = 0; i <= 25; i++){
-            if (i == indexPosition){
+        for (int i = 0; i <= 25; i++) {
+            if (i == indexPosition) {
                 bar = bar.concat(":radio_button:");
             } else {
                 bar = bar.concat("▬");
@@ -211,7 +228,7 @@ public class PlayerManager {
 
     }
 
-    public void skipSong(CommandContext context){
+    public void skipSong(CommandContext context) {
 
         GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
         musicManager.scheduler.nextTrack();
@@ -219,7 +236,7 @@ public class PlayerManager {
     }
 
 
-    public void seekTrack(CommandContext context){
+    public void seekTrack(CommandContext context) {
 
         GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
         String time = context.getMessage().getContentRaw().substring(8);
@@ -231,11 +248,11 @@ public class PlayerManager {
 
         AudioTrack track = musicManager.getPlayer().getPlayingTrack();
         try {
-            track.setPosition(Long.parseLong(time)*1000);
-        } catch (NumberFormatException e){
-            if (time.matches("\\d+:\\d+")){
+            track.setPosition(Long.parseLong(time) * 1000);
+        } catch (NumberFormatException e) {
+            if (time.matches("\\d+:\\d+")) {
                 String[] times = time.split(":");
-                long durationToSet = (Long.parseLong((times[0]))*60+Long.parseLong(times[1]))*1000;
+                long durationToSet = (Long.parseLong((times[0])) * 60 + Long.parseLong(times[1])) * 1000;
                 track.setPosition(durationToSet);
             } else {
                 context.getChannel().sendMessage("Invalid format. Use minute:second").queue();
@@ -249,7 +266,7 @@ public class PlayerManager {
         GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
         AudioPlayer audioPlayer = musicManager.getPlayer();
 
-        if (audioPlayer.isPaused()){
+        if (audioPlayer.isPaused()) {
             context.getChannel().sendMessage("The player is already paused !").queue();
             return;
         }
@@ -265,7 +282,7 @@ public class PlayerManager {
         GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
         AudioPlayer audioPlayer = musicManager.getPlayer();
 
-        if (!audioPlayer.isPaused()){
+        if (!audioPlayer.isPaused()) {
             context.getChannel().sendMessage("The player isnt paused !").queue();
             return;
         }
@@ -286,5 +303,6 @@ public class PlayerManager {
         return playerManager;
 
     }
+
 
 }

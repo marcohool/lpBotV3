@@ -1,4 +1,5 @@
 import Config.Config;
+import com.wrapper.spotify.SpotifyApi;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -6,8 +7,10 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import javax.security.auth.login.LoginException;
+import java.net.URI;
 
 public class Main {
+
 
     private Main() throws LoginException {
 
@@ -19,6 +22,7 @@ public class Main {
                 .addEventListeners(new Listeners())
                 .setActivity(Activity.watching("PFC Lokomotiv Plovdiv"))
                 .build();
+
 
     }
 
