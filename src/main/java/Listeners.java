@@ -2,10 +2,12 @@ import Command.CommandContext;
 import Command.CommandInterface;
 import Config.Constants;
 import me.duncte123.botcommons.BotCommons;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
 

@@ -37,6 +37,7 @@ public class CommandManager {
         addCommand(new NowPlaying());
         addCommand(new Clear());
         addCommand(new Seek());
+        addCommand(new Loop());
     }
 
     public void addCommand(CommandInterface command) {

@@ -12,6 +12,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import java.awt.*;
 import java.net.MalformedURLException;
@@ -60,7 +61,7 @@ public class PlayerManager {
                 if (requestedSong.contains("/track/")) { // Is track
                     requestedSong = "ytsearch:".concat(Objects.requireNonNull(Spotify.getTrackName(requestedSong.substring(requestedSong.indexOf("/track/") + 7, requestedSong.indexOf("?")))));
                 } else { // Is playlist
-                    isPlaylist = true;
+                    //isPlaylist = true;
                 }
             }
 
@@ -228,9 +229,17 @@ public class PlayerManager {
 
     }
 
+    public void loopTrack(TextChannel channel){
+
+        GuildMusicManager musicManager = getGuildMusicManager(channel.getGuild());
+        musicManager.scheduler.loop(channel);
+
+    }
+
     public void skipSong(CommandContext context) {
 
         GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
+        context.getMessage().addReaction("\uD83D\uDC4D").queue();
         musicManager.scheduler.nextTrack();
 
     }

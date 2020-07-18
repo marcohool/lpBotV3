@@ -19,7 +19,7 @@ public class Help implements CommandInterface {
                 .addField("<:league:707659747662233680> League of Legends",
                         "`lp league [summoner name]`, `lp league na [summoner name]`, `lp league eune [summoner name]`",
                         false)
-                .addField(":musical_note: Music", "`lp join`, `lp leave`, `lp play`, `lp skip`, `lp clear`, `lp np`, `lp pause`, `lp unpause`, `lp queue`, `lp seek`", false)
+                .addField(":musical_note: Music", "`lp join`, `lp leave`, `lp play`, `lp skip`, `lp clear`, `lp np`, `lp pause`, `lp unpause`, `lp queue`, `lp seek`, `lp loop`", false)
                 .addField(":shield: Admin", "`lp set league command enabled`, `lp set league command disabled`", false)
                 .addField(":wrench: Other", "`lp pfp`, `lp pfp @[user]`", false)
                 .setColor(new Color(54, 57, 63));
