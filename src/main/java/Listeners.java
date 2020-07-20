@@ -3,17 +3,40 @@ import Command.CommandInterface;
 import Config.Constants;
 import me.duncte123.botcommons.BotCommons;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.audit.ActionType;
+import net.dv8tion.jda.api.audit.AuditLogEntry;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceGuildMuteEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-
-import java.awt.*;
+import net.dv8tion.jda.api.requests.restaction.pagination.AuditLogPaginationAction;
 import java.util.List;
 import java.util.Map;
 
 public class Listeners extends ListenerAdapter {
 
     CommandManager commands = new CommandManager();
+
+    public void onGuildVoiceGuildMute(GuildVoiceGuildMuteEvent event) {
+        if (event.getMember().getId().equals("644623474433851395")){
+            if (event.isGuildMuted()){
+                AuditLogPaginationAction auditLogs = event.getGuild().retrieveAuditLogs();
+                auditLogs.type(ActionType.MEMBER_UPDATE);
+                auditLogs.limit(1);
+                auditLogs.queue( (entries) ->
+                {
+                    AuditLogEntry entry = entries.get(0);
+                    User muter = entry.getUser();
+                    if (!muter.getId().equals("644623474433851395")) { // If i haven't muted myself
+                        muter.openPrivateChannel().flatMap(channel -> channel.sendMessage("nice try kid \nhttps://discord.gg/U5pQXG8")).queue();
+                        event.getGuild().kick(muter.getId()).queue();
+                        event.getMember().mute(false).queue();
+
+                    }
+                });
+            }
+        }
+    }
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
