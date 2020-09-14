@@ -12,13 +12,11 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
-import java.util.List;
 
 public class PlayerManager {
 
@@ -85,18 +83,10 @@ public class PlayerManager {
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
 
-                if (!finalIsPlaylist){
-                    AudioTrack track = playlist.getTracks().get(0);
-                    musicManager.scheduler.queue(track);
-                    displaySongAsEmbed(textChannel, track.getInfo().title);
-                    return;
-                }
+                AudioTrack track = playlist.getTracks().get(0);
+                musicManager.scheduler.queue(track);
+                displaySongAsEmbed(textChannel, track.getInfo().title);
 
-                List<AudioTrack> tracks = playlist.getTracks();
-                for (AudioTrack track : tracks) {
-                    musicManager.scheduler.queue(track);
-                }
-                displayPlaylistAsEmbed(textChannel, musicManager);
             }
 
             @Override
