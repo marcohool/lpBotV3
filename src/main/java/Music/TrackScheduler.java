@@ -42,7 +42,6 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     public void nextTrack() {
-        System.out.println("test2");
         if (!this.loop) {
             player.startTrack(queue.poll(), false);
             return;
@@ -61,9 +60,7 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        System.out.println("test");
         if (endReason.mayStartNext) {
-            System.out.println("test3");
             this.lastTrack = track;
             nextTrack();
         }
