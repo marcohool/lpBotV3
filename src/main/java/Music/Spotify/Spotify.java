@@ -43,7 +43,8 @@ public class Spotify {
             for (ArtistSimplified artist : track.getArtists()){
                 artists = artists.concat(" "+artist.getName());
             }
-            return track.getName() + " " + artists;
+            System.out.println(track.getName() + artists);
+            return track.getName() + artists;
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             System.out.println("Error: " + e.getMessage());
             return null;

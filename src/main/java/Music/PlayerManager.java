@@ -50,11 +50,11 @@ public class PlayerManager {
         TextChannel textChannel = context.getChannel();
         GuildMusicManager musicManager = getGuildMusicManager(context.getGuild());
 
-        boolean isPlaylist;
+        //boolean isPlaylist;
 
         try {
             new URL(requestedSong);
-            isPlaylist = false;
+            //isPlaylist = false;
             if (requestedSong.contains("spotify.com")){
                 if (requestedSong.contains("/track/")) { // Is track
                     requestedSong = "ytsearch:".concat(Objects.requireNonNull(Spotify.getTrackName(requestedSong.substring(requestedSong.indexOf("/track/") + 7, requestedSong.indexOf("?")))));
@@ -65,10 +65,10 @@ public class PlayerManager {
 
         } catch (MalformedURLException e) {
             requestedSong = "ytsearch:".concat(requestedSong);
-            isPlaylist = false;
+            //isPlaylist = false;
         }
 
-        boolean finalIsPlaylist = isPlaylist;
+        // boolean finalIsPlaylist = isPlaylist;
 
         audioPlayerManager.loadItemOrdered(musicManager, requestedSong, new AudioLoadResultHandler() {
 
@@ -83,9 +83,12 @@ public class PlayerManager {
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
 
-                AudioTrack track = playlist.getTracks().get(0);
-                musicManager.scheduler.queue(track);
-                displaySongAsEmbed(textChannel, track.getInfo().title);
+                int noOfTracks = 0;
+                for (AudioTrack track : playlist.getTracks()) {
+                    musicManager.scheduler.queue(track);
+                    noOfTracks++;
+                }
+                displaySongAsEmbed(textChannel, "Queued " + noOfTracks + " songs :sunglasses:");
 
             }
 

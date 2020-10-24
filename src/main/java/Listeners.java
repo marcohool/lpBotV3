@@ -37,6 +37,7 @@ public class Listeners extends ListenerAdapter {
             }
         }
     }
+    
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
