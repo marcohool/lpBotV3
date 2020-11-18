@@ -17,6 +17,7 @@ import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 public class PlayerManager {
 
@@ -59,7 +60,7 @@ public class PlayerManager {
                 if (requestedSong.contains("/track/")) { // Is track
                     requestedSong = "ytsearch:".concat(Objects.requireNonNull(Spotify.getTrackName(requestedSong.substring(requestedSong.indexOf("/track/") + 7, requestedSong.indexOf("?")))));
                 } else { // Is playlist
-                    //isPlaylist = true;
+
                 }
             }
 
@@ -83,12 +84,14 @@ public class PlayerManager {
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
 
-                int noOfTracks = 0;
-                for (AudioTrack track : playlist.getTracks()) {
-                    musicManager.scheduler.queue(track);
-                    noOfTracks++;
-                }
-                displaySongAsEmbed(textChannel, "Queued " + noOfTracks + " songs :sunglasses:");
+//                int noOfTracks = 0;
+//                for (AudioTrack track : playlist.getTracks()) {
+//                    musicManager.scheduler.queue(track);
+//                    noOfTracks++;
+//                }
+//                displaySongAsEmbed(textChannel, "Queued " + noOfTracks + " songs :sunglasses:");
+                musicManager.scheduler.queue(playlist.getTracks().get(0));
+                displaySongAsEmbed(textChannel, playlist.getTracks().get(0).getInfo().title);
 
             }
 
@@ -184,7 +187,7 @@ public class PlayerManager {
         try {
             currentTrack = "1. " + musicManager.getPlayer().getPlayingTrack().getInfo().title;
         } catch (NullPointerException e) {
-            context.getChannel().sendMessage("Queue is empty dumbass").queue();
+            context.getChannel().sendMessage("Queue is empty").queue();
             return;
         }
 

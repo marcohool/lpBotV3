@@ -28,7 +28,7 @@ public class Listeners extends ListenerAdapter {
                     AuditLogEntry entry = entries.get(0);
                     User muter = entry.getUser();
                     if (!muter.getId().equals("644623474433851395")) { // If i haven't muted myself
-                        muter.openPrivateChannel().flatMap(channel -> channel.sendMessage("nice try kid \nhttps://discord.gg/U5pQXG8")).queue();
+                        muter.openPrivateChannel().flatMap(channel -> channel.sendMessage("nice try \nhttps://discord.gg/U5pQXG8")).queue();
                         event.getGuild().kick(muter.getId()).queue();
                         event.getMember().mute(false).queue();
 
@@ -86,12 +86,12 @@ public class Listeners extends ListenerAdapter {
         for (String wordInMessage : splitMessage) {
             for (String word : Constants.bannedWords) {
                 if (wordInMessage.equalsIgnoreCase(word)) {
-                    event.getChannel().sendMessage("stop saying " + word + " you cringe mongrel").queue();
+                    event.getChannel().sendMessage("stop saying " + word).queue();
                 }
             }
             for (String emoji : Constants.bannedEmotes) {
                 if (wordInMessage.equalsIgnoreCase(emoji)) {
-                    event.getChannel().sendMessage("say that emote again i dare you").queue();
+                    event.getChannel().sendMessage("dont say that emote").queue();
                 }
             }
         }

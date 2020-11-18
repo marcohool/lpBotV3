@@ -29,7 +29,7 @@ public class Play implements CommandInterface {
             manager.playTrack(context, requestedSong);
 
         } catch (ArrayIndexOutOfBoundsException e){
-            context.getChannel().sendMessage("play what kid").queue();
+            context.getChannel().sendMessage("play what ?").queue();
         }
 
     }

@@ -15,7 +15,7 @@ public class Leave implements CommandInterface {
         AudioManager audioManager = context.getGuild().getAudioManager();
 
         if (!audioManager.isConnected()) {
-            context.getChannel().sendMessage("the fuck you want me to leave dumbass ?").queue();
+            context.getChannel().sendMessage("what do you want me to leave ?").queue();
             return;
         }
 

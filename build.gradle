@@ -18,9 +18,9 @@ dependencies {
     implementation group: 'net.dv8tion', name: 'JDA', version: '4.2.0_172' // JDA
     implementation group: 'me.duncte123', name: 'botCommons', version: '1.0.88' // JDA tools
     implementation "com.merakianalytics.orianna:orianna:4.0.0-rc7" // League Orianna API
-    //implementation 'com.sedmelluq:lavaplayer:1.3.50' // Lava player
+    implementation 'com.sedmelluq:lavaplayer:1.3.60' // Lava player
     //implementation 'com.github.Devoxin:lavaplayer:1.3.59'
-    implementation 'com.github.Devoxin:lavaplayer:1.3.59'
+    //implementation 'com.github.Devoxin:lavaplayer:1.3.59'
     compile 'io.github.cdimascio:java-dotenv:5.2.1' // Dotenv
     compile 'se.michaelthelin.spotify:spotify-web-api-java:6.1.0' // Spotify
 
